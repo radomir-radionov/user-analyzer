@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { asyncHandler } from "../../utils/asyncHandler";
-import * as userController from "./userController";
+import * as userController from "./controller";
 import {
   validateCreateUser,
   validatePartialUpdateUser,
@@ -10,36 +10,24 @@ import {
 
 const router = Router();
 
-router.get("/api/users", asyncHandler(userController.getAllUsers));
+router.get("/", asyncHandler(userController.getAllUsers));
 
-router.get(
-  "/api/users/:id",
-  validateUserId,
-  asyncHandler(userController.getUser)
-);
+router.get("/:id", validateUserId, asyncHandler(userController.getUser));
 
-router.post(
-  "/api/users",
-  validateCreateUser,
-  asyncHandler(userController.createUser)
-);
+router.post("/", validateCreateUser, asyncHandler(userController.createUser));
 
 router.put(
-  "/api/users/:id",
+  "/:id",
   validateReplaceUser,
   asyncHandler(userController.replaceUser)
 );
 
 router.patch(
-  "/api/users/:id",
+  "/:id",
   validatePartialUpdateUser,
   asyncHandler(userController.partialUpdateUser)
 );
 
-router.delete(
-  "/api/users/:id",
-  validateUserId,
-  asyncHandler(userController.deleteUser)
-);
+router.delete("/:id", validateUserId, asyncHandler(userController.deleteUser));
 
 export default router;
