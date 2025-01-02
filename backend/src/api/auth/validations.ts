@@ -1,33 +1,35 @@
-import { body } from "express-validator";
+import { RequestHandler } from "express";
+import { body, validationResult } from "express-validator";
 import { ValidationMessages } from "./constants/validationMessages";
 
-export const validateSignUp = [
+export const validate: RequestHandler = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).json({ errors: errors.array() });
+    return;
+  }
+  next();
+};
+
+export const validateSignUp: RequestHandler[] = [
   body("name")
-    .notEmpty()
+    .isString()
     .withMessage(ValidationMessages.NAME_REQUIRED)
     .isLength({ max: 50 })
     .withMessage(ValidationMessages.NAME_MAX_LENGTH),
-  body("email")
-    .isEmail()
-    .withMessage(ValidationMessages.INVALID_EMAIL)
-    .normalizeEmail(),
+  body("email").isEmail().withMessage(ValidationMessages.INVALID_EMAIL),
   body("password")
+    .isString()
+    .withMessage(ValidationMessages.PASSWORD_REQUIRED)
     .isLength({ min: 6 })
     .withMessage(ValidationMessages.PASSWORD_MIN_LENGTH)
-    .isStrongPassword({
-      minLength: 6,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1,
-      minSymbols: 0,
-    })
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)
     .withMessage(ValidationMessages.PASSWORD_STRONG),
+  validate,
 ];
 
-export const validateSignIn = [
-  body("email")
-    .isEmail()
-    .withMessage(ValidationMessages.INVALID_EMAIL)
-    .normalizeEmail(),
-  body("password").notEmpty().withMessage(ValidationMessages.PASSWORD_REQUIRED),
+export const validateSignIn: RequestHandler[] = [
+  body("email").isEmail().withMessage(ValidationMessages.INVALID_EMAIL),
+  body("password").isString().withMessage(ValidationMessages.PASSWORD_REQUIRED),
+  validate,
 ];
