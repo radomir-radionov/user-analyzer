@@ -24,6 +24,7 @@ This project uses the following technologies and libraries:
 - Swagger UI for API documentation
 - Bcrypt for password hashing
 - Express-validator for input validation
+- Nodemailer for sending emails
 
 ---
 
@@ -34,7 +35,8 @@ This project uses the following technologies and libraries:
 - **Secure Passwords**: Passwords are hashed using `bcryptjs`.
 - **Validation**: Input validation for all endpoints.
 - **Error Handling**: Centralized error handling.
-- **API Documentation**: Swagger UI integration.
+- **API Documentation**: Swagger UI integration.    
+- **Welcome Email on Signup**: Users receive a welcome email after successful signup using `Nodemailer`.
 
 ---
 
@@ -54,9 +56,9 @@ will be soon
 
 ## Running the Application
 
-`npm run dev`	- Start the development server with hot reload. 
-`npm run build` -	Build the TypeScript code into JavaScript.  
-`npm start` -	Start the production server.    
+`npm run dev` - Start the development server with hot reload.     
+`npm run build` -	Build the TypeScript code into JavaScript.      
+`npm start` -	Start the production server.        
 `npm run` prisma:seed	- Seed the database with initial data.
 
 ## API Documentation

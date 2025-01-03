@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { sendEmail } from "../../shared/services/emailService";
 import { AppError } from "../../utils/errorHandler";
 import { ErrorMessages } from "./constants/errorMessages";
 import { logout, refreshTokens, signIn, signUp } from "./services/authService";
@@ -16,6 +17,13 @@ export const registerUser = async (
 
   try {
     const result = await signUp(name, email, password);
+
+    await sendEmail(
+      email,
+      "Welcome to Radomir's Server!",
+      `Hello ${name}, welcome to our platform!`,
+      `<h1>Hello ${name}</h1><p>Welcome to our platform. We're excited to have you!</p>`
+    );
 
     res.cookie("refreshToken", result.tokens.refreshToken, {
       httpOnly: true,
