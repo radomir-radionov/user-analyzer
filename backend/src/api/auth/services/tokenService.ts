@@ -3,14 +3,15 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "access_secret";
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "refresh_secret";
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "access_secret";
+const REFRESH_TOKEN_SECRET =
+  process.env.REFRESH_TOKEN_SECRET || "refresh_secret";
 
 export const generateTokens = (payload: object) => {
-  const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, {
+  const accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
     expiresIn: "15m",
   });
-  const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, {
+  const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {
     expiresIn: "7d",
   });
   return { accessToken, refreshToken };
@@ -18,7 +19,7 @@ export const generateTokens = (payload: object) => {
 
 export const validateAccessToken = (token: string): JwtPayload | null => {
   try {
-    return jwt.verify(token, JWT_ACCESS_SECRET) as JwtPayload;
+    return jwt.verify(token, ACCESS_TOKEN_SECRET) as JwtPayload;
   } catch (err) {
     return null;
   }
@@ -26,7 +27,7 @@ export const validateAccessToken = (token: string): JwtPayload | null => {
 
 export const validateRefreshToken = (token: string): JwtPayload | null => {
   try {
-    const payload = jwt.verify(token, JWT_REFRESH_SECRET);
+    const payload = jwt.verify(token, REFRESH_TOKEN_SECRET);
     return typeof payload === "object" ? (payload as JwtPayload) : null;
   } catch (err) {
     return null;

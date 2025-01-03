@@ -1,17 +1,20 @@
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import express, { Application, Request, Response } from "express";
-import routes from "./api/routes"; // All application routes
-import passport from "./config/passport"; // Passport configuration
+import routes from "./api/routes";
+import corsConfig from "./config/cors";
+import passport from "./config/passport";
 import { errorHandler } from "./utils/errorHandler";
 
 /**
  * Create and configure an Express application.
  * @returns {Application} Configured Express application.
  */
-
 const app = (): Application => {
   const app = express();
+
+  app.use(cors(corsConfig));
 
   app.use(bodyParser.json());
   app.use(cookieParser());

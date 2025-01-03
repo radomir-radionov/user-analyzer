@@ -51,19 +51,24 @@ export const loginUser = async (
 ): Promise<void> => {
   try {
     const { email, password }: { email: string; password: string } = req.body;
+
     const result = await signIn(email, password);
 
     res.cookie("refreshToken", result.tokens.refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    console.log("Login successful, sending tokens to client...");
 
     res.status(200).json(result);
   } catch (error: unknown) {
     if (error instanceof AppError) {
       next(error);
     } else {
+      console.error("Unexpected error during login:", error);
       next(new AppError(ErrorMessages.SIGNIN_UNEXPECTED_ERROR, 500));
     }
   }
@@ -108,7 +113,6 @@ export const logoutUser = async (
 ): Promise<void> => {
   try {
     const cookies = req.cookies as { refreshToken?: string };
-
     const { refreshToken } = cookies;
 
     if (!refreshToken) {
@@ -116,9 +120,15 @@ export const logoutUser = async (
     }
 
     const user = await refreshTokens(refreshToken);
+
     await logout(user.user.id);
 
-    res.clearCookie("refreshToken");
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
     res.status(200).json({ message: "Logged out successfully" });
   } catch (error: unknown) {
     if (error instanceof AppError) {

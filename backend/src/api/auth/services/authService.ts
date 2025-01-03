@@ -58,7 +58,10 @@ export const signIn = async (
     throw new AppError("Invalid email or password", 401);
   }
 
+  console.log(`User ${email} found, generating tokens...`);
+
   const tokens = generateTokens({ id: user.id, role: user.role });
+
   await saveToken(user.id, tokens.refreshToken);
 
   const { refreshToken, ...userWithoutRefreshToken } = user;

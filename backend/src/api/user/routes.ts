@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { authenticateUser } from "../../middleware/authMiddleware";
 import { asyncHandler } from "../../utils/asyncHandler";
 import * as userController from "./controller";
 import {
@@ -9,6 +10,8 @@ import {
 } from "./validations";
 
 const router = Router();
+
+router.use(authenticateUser);
 
 /**
  * @swagger
