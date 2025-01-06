@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import keys from "../../config/keys";
 import { sendEmail } from "../../shared/services/emailService";
 import { AppError } from "../../utils/errorHandler";
 import { ErrorMessages } from "./constants/errorMessages";
@@ -27,7 +28,7 @@ export const registerUser = async (
 
     res.cookie("refreshToken", result.tokens.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: keys.app.nodeEnv === "production",
       sameSite: "strict",
     });
 
@@ -56,7 +57,7 @@ export const loginUser = async (
 
     res.cookie("refreshToken", result.tokens.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: keys.app.nodeEnv === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
@@ -92,7 +93,7 @@ export const refreshAccessToken = async (
 
     res.cookie("refreshToken", result.tokens.refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: keys.app.nodeEnv === "production",
       sameSite: "strict",
     });
 
@@ -125,7 +126,7 @@ export const logoutUser = async (
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: keys.app.nodeEnv === "production",
       sameSite: "strict",
     });
 

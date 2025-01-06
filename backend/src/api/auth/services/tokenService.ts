@@ -1,14 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import keys from "../../../config/keys";
 
 const prisma = new PrismaClient();
 
-const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "access_secret";
-const REFRESH_TOKEN_SECRET =
-  process.env.REFRESH_TOKEN_SECRET || "refresh_secret";
+const ACCESS_TOKEN_SECRET = keys.tokens.accessTokenSecret;
+const REFRESH_TOKEN_SECRET = keys.tokens.refreshTokenSecret;
 
 export const generateTokens = (payload: object) => {
-  const accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
+  const accessToken = jwt.sign(payload, keys.tokens.accessTokenSecret, {
     expiresIn: "15m",
   });
   const refreshToken = jwt.sign(payload, REFRESH_TOKEN_SECRET, {

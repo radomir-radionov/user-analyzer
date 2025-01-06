@@ -30,7 +30,7 @@ This project uses the following technologies and libraries:
 
 ## Features
 
-- **Authentication**: User signup, login, logout, and token refresh endpoints.
+- **Authentication**: User signup, login, logout, token refresh endpoints and authed routes.
 - **User Management**: CRUD operations for users.
 - **Secure Passwords**: Passwords are hashed using `bcryptjs`.
 - **Validation**: Input validation for all endpoints.

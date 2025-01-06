@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import keys from "../config/keys";
 
 class AppError extends Error {
   statusCode: number;
@@ -20,14 +21,14 @@ export const errorHandler = (
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
 
-  if (process.env.NODE_ENV === "development") {
+  if (keys.app.nodeEnv === "development") {
     console.error(`[Error] ${err.stack || message}`);
   }
 
   res.status(statusCode).json({
     error: {
       message,
-      ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+      ...(keys.app.nodeEnv === "development" && { stack: err.stack }),
     },
   });
 };

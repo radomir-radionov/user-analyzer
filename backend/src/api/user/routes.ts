@@ -11,7 +11,7 @@ import {
 
 const router = Router();
 
-router.use(authenticateUser);
+router.use(authenticateUser); // Ensure all routes require authentication
 
 /**
  * @swagger
@@ -19,6 +19,8 @@ router.use(authenticateUser);
  *   get:
  *     summary: Get all users
  *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []  # Indicates that the Authorization header is required
  *     responses:
  *       200:
  *         description: A list of users
@@ -28,6 +30,10 @@ router.use(authenticateUser);
  *               type: array
  *               items:
  *                 type: object
+ *       401:
+ *         description: Unauthorized, missing or invalid token
+ *       500:
+ *         description: Internal server error
  */
 router.get("/", asyncHandler(userController.getAllUsers));
 
@@ -44,6 +50,8 @@ router.get("/", asyncHandler(userController.getAllUsers));
  *         schema:
  *           type: integer
  *         description: ID of the user to retrieve
+ *     security:
+ *       - BearerAuth: []  # Authorization header required
  *     responses:
  *       200:
  *         description: A user object
@@ -75,6 +83,8 @@ router.get("/:id", validateUserId, asyncHandler(userController.getUser));
  *                 type: string
  *               password:
  *                 type: string
+ *     security:
+ *       - BearerAuth: []  # Authorization header required
  *     responses:
  *       201:
  *         description: The created user object
@@ -109,6 +119,8 @@ router.post("/", validateCreateUser, asyncHandler(userController.createUser));
  *                 type: string
  *               password:
  *                 type: string
+ *     security:
+ *       - BearerAuth: []  # Authorization header required
  *     responses:
  *       200:
  *         description: The updated user object
@@ -140,6 +152,8 @@ router.put(
  *             type: object
  *             additionalProperties:
  *               type: string
+ *     security:
+ *       - BearerAuth: []  # Authorization header required
  *     responses:
  *       200:
  *         description: The updated user object
@@ -165,6 +179,8 @@ router.patch(
  *         schema:
  *           type: integer
  *         description: ID of the user to delete
+ *     security:
+ *       - BearerAuth: []  # Authorization header required
  *     responses:
  *       204:
  *         description: User successfully deleted

@@ -1,7 +1,5 @@
-import dotenv from "dotenv";
 import nodemailer from "nodemailer";
-
-dotenv.config();
+import keys from "../../config/keys";
 
 /**
  * Sends an email using Nodemailer.
@@ -10,6 +8,9 @@ dotenv.config();
  * @param text - Plain text email content.
  * @param html - HTML formatted email content.
  */
+
+const emailKeys = keys.email;
+
 export const sendEmail = async (
   to: string,
   subject: string,
@@ -18,17 +19,17 @@ export const sendEmail = async (
 ): Promise<void> => {
   try {
     const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: Number(process.env.EMAIL_PORT) || 465,
+      host: emailKeys.host,
+      port: Number(emailKeys.port),
       secure: true, // true for TLS (port 465)
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: emailKeys.user,
+        pass: emailKeys.pass,
       },
     });
 
     await transporter.sendMail({
-      from: `"Your Server" <${process.env.EMAIL_USER}>`,
+      from: `"Your Server" <${emailKeys.user}>`,
       to,
       subject,
       text,

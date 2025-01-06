@@ -1,6 +1,8 @@
 import { Router } from "express";
+import passport from "passport";
 import { asyncHandler } from "../../utils/asyncHandler";
 import * as authController from "./controller";
+import { generateTokens } from "./services/tokenService";
 import { validateSignIn, validateSignUp } from "./validations";
 
 const router = Router();
@@ -85,6 +87,60 @@ router.post("/signin", validateSignIn, asyncHandler(authController.loginUser));
 
 /**
  * @swagger
+ * /api/auth/google:
+ *   get:
+ *     summary: Google OAuth login
+ *     description: Redirects to Google OAuth for login.
+ *     responses:
+ *       302:
+ *         description: Redirects to Google login
+ */
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+/**
+ * @swagger
+ * /api/auth/google/callback:
+ *   get:
+ *     summary: Google OAuth callback
+ *     description: Handles the callback from Google after successful authentication.
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated via Google
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                 refreshToken:
+ *                   type: string
+ */
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  async (req, res) => {
+    const user = req.user;
+
+    if (user) {
+      const tokens = generateTokens(user);
+
+      res.json({
+        message: "Authentication successful",
+        tokens,
+      });
+      // res.redirect("/profile");
+    } else {
+      res.status(401).json({ message: "Authentication failed" });
+    }
+  }
+);
+
+/**
+ * @swagger
  * /api/auth/refresh:
  *   post:
  *     summary: Refresh the access token
@@ -98,6 +154,8 @@ router.post("/signin", validateSignIn, asyncHandler(authController.loginUser));
  *             properties:
  *               refreshToken:
  *                 type: string
+ *     security:
+ *       - BearerAuth: []  # Authorization header required for token refresh
  *     responses:
  *       200:
  *         description: Successfully refreshed tokens
@@ -123,6 +181,8 @@ router.post("/refresh", asyncHandler(authController.refreshAccessToken));
  *   post:
  *     summary: Log out a user
  *     description: Logs out the user by clearing the refresh token cookie.
+ *     security:
+ *       - BearerAuth: []  # Authorization header required for logout
  *     responses:
  *       200:
  *         description: Successfully logged out

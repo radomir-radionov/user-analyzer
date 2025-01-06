@@ -8,19 +8,28 @@ import swaggerUi from "swagger-ui-express";
 
 const swaggerSpec = swaggerJsdoc({
   swaggerDefinition: {
-    openapi: "3.0.0", // OpenAPI version
+    openapi: "3.0.0",
     info: {
-      title: "Radomir's API", // Your API's title
-      version: "1.0.0", // Your API version
-      description: "API documentation for Radomir's server", // Description
+      title: "Radomir's API",
+      version: "1.0.0",
+      description: "API documentation for Radomir's server",
     },
     servers: [
       {
-        url: "http://localhost:3000", // Base URL for your API
+        url: "http://localhost:3000", // Replace with your server URL
       },
     ],
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT", // Optional, for documentation clarity
+        },
+      },
+    },
   },
-  apis: ["./src/api/**/*.ts"], // Path to your route files (e.g., controllers, models)
+  apis: ["./src/api/**/*.ts"], // Path to your API files
 });
 
 /**
